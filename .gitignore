@@ -1,0 +1,26 @@
+# Build artifacts
+/target/
+debug/
+*.pdb
+
+# Cargo lock for binaries
+# Cargo.lock  # Keep for reproducible builds
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated output files
+vanity_mints.json
+*.json
+
+# Environment
+.env
+.env.local
