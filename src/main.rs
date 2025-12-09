@@ -38,8 +38,13 @@ struct Args {
 
 #[derive(Serialize, Debug)]
 struct VanityResult {
-    public_key: String,
-    secret_key: String,
+    /// Token mint address (public key) ending with suffix
+    mint_address: String,
+    /// Full 64-byte keypair (32 private + 32 public) in base58 - use with Keypair.fromSecretKey(bs58.decode(...))
+    mint_keypair: String,
+    /// Whether this keypair has been used for a token launch
+    used: bool,
+    /// Number of attempts to find this keypair
     attempts: u64,
 }
 
@@ -165,9 +170,9 @@ fn main() {
     serde_json::to_writer_pretty(file, &results).expect("Failed to write JSON");
 
     println!("\nResults written to: {}", args.output);
-    println!("\nGenerated addresses:");
+    println!("\nGenerated mint addresses:");
     for (i, result) in results.iter().enumerate() {
-        println!("  {}. {} (attempts: {})", i + 1, result.public_key, result.attempts);
+        println!("  {}. {} (attempts: {})", i + 1, result.mint_address, result.attempts);
     }
 }
 
@@ -212,8 +217,9 @@ fn grind_loop(
             }
 
             let result = VanityResult {
-                public_key: pubkey,
-                secret_key: secret,
+                mint_address: pubkey,
+                mint_keypair: secret,
+                used: false,
                 attempts: attempts.load(Ordering::Relaxed),
             };
 
